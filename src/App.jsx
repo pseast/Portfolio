@@ -307,7 +307,6 @@ const Hero = () => {
 };
 
 const Features = () => {
-  // ... (parallax logic remains the same) ...
   const parallaxRef = useRef(null);
   const [backgroundPosition, setBackgroundPosition] = useState(0);
 
@@ -330,21 +329,57 @@ const Features = () => {
     };
   }, []);
 
-
   return (
     <section className="pt-10 pb-3">
       <div className="container mx-auto px-6">
         <h2 className="text-3xl font-bold text-center font-montserrat mb-10">Features</h2>
-        {/* The first two cards remain unchanged */}
+        {/* This is the container for the first two cards */}
         <div className="grid md:grid-cols-2 gap-6 items-stretch">
           <AnimatedCard delay={100}>
-            {/* ... Card 1 content ... */}
+            <div className="bg-white p-6 rounded-lg shadow-lg h-full flex flex-col relative">
+                <div className="absolute top-10 right-0 sm:top-6 sm:left-2/3 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 sm:w-48 sm:h-48 md:w-56 md:h-56">
+                <img 
+                    src="/star.png.webp"
+                    alt="Floating star object" 
+                    className="w-full h-full object-contain animate-hover-float drop-shadow-xl"
+                />
+                </div>
+                <div className="absolute top-32 left-8 sm:top-40 sm:left-40 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-40 sm:h-40 md:w-48 md:h-48">
+                <img 
+                    src="/lightning.png.webp"
+                    alt="Floating lightning bolt" 
+                    className="w-3/4 h-3/4 object-contain animate-hover-float-delay drop-shadow-xl"
+                />
+                </div>
+                <div className="mt-40 md:mt-48 flex flex-col flex-1 relative z-10">
+                <h3 className="text-xl font-bold mb-4 font-montserrat">Innovative Website Designs for Business-to-Customer Clients</h3>
+                <p className="text-gray-600 mb-4">
+                    We build eye-catching websites designed to engage users and drive conversions. Our solutions are fully optimized for performance, SEO, and user experience, ensuring your business stands out online.
+                </p>
+                </div>
+            </div>
           </AnimatedCard>
           <AnimatedCard delay={200}>
-            {/* ... Card 2 content ... */}
+            <div className="bg-white p-6 rounded-lg shadow-lg h-full flex flex-col">
+              <div className="flex-1">
+                <h3 className="text-xl font-bold mb-4 font-montserrat">
+                  Tailored Website Solutions for Business-to-Business Clients
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Streamline your business with our advanced search, product customization, and secure payment solutions. Efficiently manage orders, track inventory, and access analytics to drive growth. Simplify your operations and boost productivity
+                </p>
+              </div>
+              <div className="mt-4 h-32 md:h-48 w-full overflow-hidden rounded-lg">
+                <img
+                  src="/B2B-2.jpg"
+                  alt="Business-to-Business tailored solutions"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
           </AnimatedCard>
         </div>
-        {/* This is the responsive design card that will be changed */}
+        {/* This is the container for the third card */}
         <div className="md:col-span-2 mt-6">
           <AnimatedCard delay={300}>
             <div
@@ -354,13 +389,10 @@ const Features = () => {
                 backgroundPosition: `${backgroundPosition}% 50%`,
               }}
             >
-                {/* --- CHANGE 1: "Responsive Designs" card is repositioned on mobile --- */}
-                <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-64 md:top-8 md:left-32 md:bottom-auto md:w-80 md:transform-none bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-xl z-30 animate-subtle-float">
+                <div className="absolute bottom-5 left-20 -translate-x-1/2 w-64 md:top-8 md:left-32 md:bottom-auto md:w-80 md:transform-none bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-xl z-30 animate-subtle-float">
                     <h3 className="text-xl font-bold mb-2 font-montserrat">Responsive Designs</h3>
                     <p className="text-gray-700 text-sm">We offer responsive designs, ensuring a seamless user experience across various devices and screen sizes.</p>
                 </div>
-
-                {/* --- CHANGE 2: This first chat window is now hidden on mobile --- */}
                 <div className="absolute top-1/2 left-1/2 bg-white/80 backdrop-blur-md p-4 rounded-3xl shadow-xl animate-float-left z-30 hidden md:flex">
                     <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0">
@@ -372,9 +404,7 @@ const Features = () => {
                         </div>
                     </div>
                 </div>
-
-                {/* --- CHANGE 3: This second chat window is repositioned on mobile --- */}
-                <div className="absolute top-[26rem] right-25 bottom-25 md:top-auto md:bottom-12 md:left-1/2 md:right-auto bg-white/80 backdrop-blur-md p-4 rounded-3xl shadow-xl animate-float-right z-30 flex">
+                    <div className="absolute top-[2rem] left-1/2 -translate-x-1/2 md:left-1/2 md:translate-x-0 md:top-auto md:bottom-12 bg-white/80 backdrop-blur-md p-4 rounded-3xl shadow-xl animate-subtle-float md:animate-float-right z-30 flex">
                     <div className="flex items-center space-x-3">
                        <div className="w-10 h-10 rounded-full bg-gray-200 flex-shrink-0">
                             <img src="/prof2.png" alt="avatar" className="rounded-full" />
@@ -385,12 +415,8 @@ const Features = () => {
                         </div>
                     </div>
                 </div>
-                
-                {/* Transparent background rectangles remain unchanged */}
                 <div className="absolute left-1/2 transform -translate-x-1/2 bottom-[-14rem] md:bottom-[-10rem] w-[40rem] h-[20rem] bg-white/10 rounded-3xl z-5"></div>
                 <div className="absolute left-1/2 transform -translate-x-1/2 bottom-[-19rem] md:bottom-[-16rem] w-[30rem] h-[30rem] bg-white/20 rounded-3xl z-10"></div>
-                
-                {/* Main "Phone" Container */}
                 <div className="absolute left-1/2 -translate-x-1/2 bottom-[-14rem] md:bottom-[-16rem] w-80 h-[40rem] bg-white rounded-t-3xl shadow-2xl p-4 border border-white z-20">
                     <div className="relative w-full h-full bg-white rounded-2xl p-4 flex flex-col items-center space-y-4">
                         <div className="w-full flex justify-end items-center">
@@ -408,7 +434,6 @@ const Features = () => {
                         <div className="relative w-full h-56 rounded-2xl overflow-hidden mt-2">
                             <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=870&q=80" alt="Abstract background" className="w-full h-full object-cover opacity-75" />
                             <div className="absolute inset-0 bg-black/30 p-4 flex items-center justify-center">
-                                {/* --- CHANGE 4: Text is now hidden on mobile to make space for the floating card --- */}
                                 <h2 className="text-white text-center font-bold text-2xl font-montserrat hidden md:block">
                                     Beauty is not in the eye of the beholder
                                 </h2>
@@ -442,8 +467,9 @@ const MoreFeatures = () => {
             imageUrl: "/ecommerce.jpg" 
         },
         { 
-            title: "Animations", 
-            description: "Bring your website to life with lightweight, high-quality animations using Lottie.", 
+            title: "Intuitive UX/UI Design", 
+            description: "We craft human-centered interfaces that make navigation effortless. By focusing on seamless user journeys, we boost engagement and drive customer loyalty.", 
+            // --- CHANGE: The rocketAnimation is used here again ---
             imageUrl: rocketAnimation 
         }
     ];
@@ -455,7 +481,8 @@ const MoreFeatures = () => {
                     {features.map((feature, index) => (
                         <AnimatedCard key={index} delay={index * 150}>
                             <div className="bg-white rounded-xl overflow-hidden shadow-md h-full flex flex-col">
-                                {feature.title === "Animations" ? (
+                                { /* --- CHANGE: Condition updated to match the new title --- */ }
+                                {feature.title === "Intuitive UX/UI Design" ? (
                                     <Lottie animationData={feature.imageUrl} className="w-full h-56 object-cover"/>
                                 ) : (
                                     <img src={feature.imageUrl} alt={feature.title} className="w-full h-48 object-cover"/>
@@ -463,9 +490,6 @@ const MoreFeatures = () => {
                                 <div className="p-6 flex-1 flex flex-col">
                                     <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
                                     <p className="text-gray-600 mb-4 flex-1">{feature.description}</p>
-                                    <button className="bg-gradient-to-r from-[#2FBD90] to-[#3BD6A2] hover:from-[#2ab584] hover:to-[#36c796] text-black px-4 py-2 rounded-md transition-all duration-700 mt-auto">
-                                        Learn More
-                                    </button>
                                 </div>
                             </div>
                         </AnimatedCard>

@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Lottie from "lottie-react";
+import eCommerce from "./animations/eCommerce.json";
+import ContentCreation from "./animations/ContentCreation.json";
+import Marketing from "./animations/Marketing.json";
 import rocketAnimation from "./animations/rocket-animation.json";
 
 // 1. ALL CHILD/HELPER COMPONENTS ARE DEFINED FIRST
@@ -337,14 +340,14 @@ const Features = () => {
         <div className="grid md:grid-cols-2 gap-6 items-stretch">
           <AnimatedCard delay={100}>
             <div className="bg-white p-6 rounded-lg shadow-lg h-full flex flex-col relative">
-                <div className="absolute top-10 right-0 sm:top-6 sm:left-2/3 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 sm:w-48 sm:h-48 md:w-56 md:h-56">
+                <div className="absolute top-10 right-0 sm:top-6 sm:left-2/3 md:top-8 md:left-2/3 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 sm:w-32 sm:h-32 md:w-48 md:h-48">
                 <img 
                     src="/star.png.webp"
                     alt="Floating star object" 
                     className="w-full h-full object-contain animate-hover-float drop-shadow-xl"
                 />
                 </div>
-                <div className="absolute top-32 left-8 sm:top-40 sm:left-40 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 sm:w-40 sm:h-40 md:w-48 md:h-48">
+                <div className="absolute top-32 left-1/3 sm:top-30 sm:left-1/3 md:top-30 md:left-1/3 transform -translate-x-1/2 -translate-y-1/2 w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48">
                 <img 
                     src="/lightning.png.webp"
                     alt="Floating lightning bolt" 
@@ -454,39 +457,37 @@ const MoreFeatures = () => {
         { 
             title: "Content Creation", 
             description: "Produce content that sells, allowing you to manage your services independently or leverage our expertise.", 
-            imageUrl: "/content.webp" 
+            imageUrl: ContentCreation // Assumes this is imported animation data
         },
         { 
             title: "Marketing Services", 
             description: "Improve your online presence with custom marketing packages from email marketing, and targeted advertising to social media marketing.", 
-            imageUrl: "/marketing.png" 
+            imageUrl: Marketing // Assumes this is imported animation data
         },
         { 
             title: "Ecommerce Solutions", 
             description: "Our ecommerce solutions are tailored to grow your business, featuring high-end and secure features.", 
-            imageUrl: "/ecommerce.jpg" 
+            imageUrl: eCommerce // Assumes this is imported animation data
         },
         { 
             title: "Intuitive UX/UI Design", 
             description: "We craft human-centered interfaces that make navigation effortless. By focusing on seamless user journeys, we boost engagement and drive customer loyalty.", 
-            // --- CHANGE: The rocketAnimation is used here again ---
-            imageUrl: rocketAnimation 
+            imageUrl: rocketAnimation // This is your existing animation data
         }
     ];
     
     return (
         <section className="py-3">
             <div className="container mx-auto px-6">
-                <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
                     {features.map((feature, index) => (
                         <AnimatedCard key={index} delay={index * 150}>
                             <div className="bg-white rounded-xl overflow-hidden shadow-md h-full flex flex-col">
-                                { /* --- CHANGE: Condition updated to match the new title --- */ }
-                                {feature.title === "Intuitive UX/UI Design" ? (
-                                    <Lottie animationData={feature.imageUrl} className="w-full h-56 object-cover"/>
-                                ) : (
-                                    <img src={feature.imageUrl} alt={feature.title} className="w-full h-48 object-cover"/>
-                                )}
+                                { /* --- CHANGE: Removed conditional logic to use Lottie for all cards --- */ }
+                                <Lottie 
+                                    animationData={feature.imageUrl} 
+                                    className="w-full h-56 object-cover"
+                                />
                                 <div className="p-6 flex-1 flex flex-col">
                                     <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
                                     <p className="text-gray-600 mb-4 flex-1">{feature.description}</p>
@@ -506,7 +507,7 @@ const LetsGetStarted = () => {
             <div className="container mx-auto px-6">
                 <h2 className="text-3xl font-bold font-montserrat text-center mb-12">Let's Get Started</h2>
                 <AnimatedCard delay={0}>
-                    <div className="relative overflow-hidden bg-zinc-900 rounded-xl p-12 shadow-md static-bg gradient-overlay">
+                    <div className="relative overflow-hidden bg-zinc-900 rounded-xl p-6 md:p-12 shadow-md static-bg gradient-overlay">
                         
                         <div className="relative z-10 text-center">
                             <p className="max-w-3xl mx-auto text-gray-200 mb-8 text-left">Unlock the full potential of your online presence that speaks to your customers, improving engagement, conversion, and loyalty. With prizmpix's cutting-edge responsive websites, you will:</p>
@@ -558,11 +559,10 @@ const Testimonials = () => {
         <section className="py-6">
             <div className="container mx-auto px-6">
                 <h2 className="text-3xl font-bold font-montserrat text-center mb-12">What Our Clients Say</h2>
-                <div className="grid gap-6 md:grid-cols-3">
+                <div className="grid gap-6 lg:grid-cols-3 md:grid-cols-1 sm:grid-cols-1">
                     {testimonials.map((testimonial, index) => (
                         <AnimatedCard key={index} delay={index * 150}>
                             <div className="bg-white rounded-xl shadow-md p-8 h-full flex flex-col">
-                                <svg className="w-8 h-8 text-gray-300 mb-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 3a1 1 0 012 0v2a1 1 0 11-2 0V3zM3 6a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zM3 14a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path></svg>
                                 <p className="text-gray-600 italic flex-1">"{testimonial.quote}"</p>
                                 <div className="mt-6 flex items-center">
                                     <img src={testimonial.avatar} alt={testimonial.name} className="w-12 h-12 rounded-full mr-4" />
@@ -580,6 +580,7 @@ const Testimonials = () => {
     );
 };
 
+{/*
 const Partners = () => {
     const partners = ["Acme Corp", "Quantum", "Echo Valley", "PULSE", "APEX", "Celestial"];
     return (
@@ -596,7 +597,7 @@ const Partners = () => {
             </div>
         </div>
     );
-}
+} */}
 
 const Footer = () => {
     const [formData, setFormData] = useState({ name: '', company: '', email: '', message: '' });
@@ -683,7 +684,6 @@ function App() {
                 <MoreFeatures />
                 <LetsGetStarted />
                 <Testimonials />
-                <Partners />
             </main>
             <Footer />
         </div>

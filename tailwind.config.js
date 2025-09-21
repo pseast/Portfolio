@@ -11,6 +11,7 @@ export default {
         montserrat: ['Montserrat', 'sans-serif'],
         dmserif: ['"DM Serif Text"', 'serif'],
         pressstart: ['"Press Start 2P"', 'system-ui'],
+        hostgrotesk: ['"Host Grotesk"', 'sans-serif'],
       },
       keyframes: {
         'hover-float': {
@@ -26,6 +27,10 @@ export default {
         'float-right': {
           '0%, 100%': { transform: 'translateX(50%) translateY(0px)' },
           '50%': { transform: 'translateX(50%) translateY(-15px)' },
+        },
+        'subtle-float': {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
         },
         grain: {
           '0%, 100%': { transform: 'translate(0, 0)' },
@@ -47,6 +52,7 @@ export default {
         'float-left': 'float-left 8s ease-in-out infinite',
         'float-right': 'float-right 6s ease-in-out infinite',
         grain: 'grain 8s steps(10, end) infinite',
+        'subtle-float': 'subtle-float 7s ease-in-out infinite',
       },
     },
   },

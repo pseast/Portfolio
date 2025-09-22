@@ -12,7 +12,9 @@
     "@splinetool/react-spline": "^4.1.0",
     "lottie-react": "^2.4.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^7.9.1",
+    "react-router-hash-link": "^2.4.3"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.3",

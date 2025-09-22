@@ -1,315 +1,262 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { HashLink } from 'react-router-hash-link'; // Step 1: Import HashLink
 import Lottie from "lottie-react";
+
+// Import animations
 import eCommerce from "./animations/eCommerce.json";
 import ContentCreation from "./animations/ContentCreation.json";
 import Marketing from "./animations/Marketing.json";
 import rocketAnimation from "./animations/rocket-animation.json";
 
-// 1. ALL CHILD/HELPER COMPONENTS ARE DEFINED FIRST
+// Import the new page components you created
+import HomePage from './pages/HomePage';
+import ServicesPage from './pages/ServicesPage';
+import PortfolioPage from './pages/PortfolioPage';
+import AboutUsPage from './pages/AboutUsPage';
 
-const UnscrambleText = ({ text }) => {
+// ===================================================================================
+// 1. COMPONENTS
+// ===================================================================================
+
+export const UnscrambleText = ({ text }) => {
+    // ... same code as before ...
     const [displayedText, setDisplayedText] = useState('');
     const ref = useRef(null);
     const animationFrameRef = useRef();
     const lastTimeRef = useRef(0);
     const iterationRef = useRef(0);
-    
     const chars = '!<>-_\\/[]{}—=+*^?#________';
-
     const animate = (time) => {
-        if (time - lastTimeRef.current < 20) { 
+        if (time - lastTimeRef.current < 20) {
             animationFrameRef.current = requestAnimationFrame(animate);
             return;
         }
-        
-        const newText = text
-            .split('')
-            .map((letter, index) => {
-                if (index < iterationRef.current) {
-                    return text[index];
-                }
-                return chars[Math.floor(Math.random() * chars.length)];
-            })
-            .join('');
-            
+        const newText = text.split('').map((letter, index) => {
+            if (index < iterationRef.current) { return text[index]; }
+            return chars[Math.floor(Math.random() * chars.length)];
+        }).join('');
         setDisplayedText(newText);
-
         if (iterationRef.current >= text.length) {
             setDisplayedText(text);
             cancelAnimationFrame(animationFrameRef.current);
             return;
         }
-
-        iterationRef.current += 1 / 2; 
+        iterationRef.current += 1 / 2;
         lastTimeRef.current = time;
         animationFrameRef.current = requestAnimationFrame(animate);
     };
-
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    iterationRef.current = 0;
-                    lastTimeRef.current = 0;
-                    if(animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-                    animationFrameRef.current = requestAnimationFrame(animate);
-                } else {
-                    cancelAnimationFrame(animationFrameRef.current);
-                    setDisplayedText('');
-                }
-            },
-            { threshold: 0.5 }
-        );
-
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                iterationRef.current = 0;
+                lastTimeRef.current = 0;
+                if(animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+                animationFrameRef.current = requestAnimationFrame(animate);
+            } else {
+                cancelAnimationFrame(animationFrameRef.current);
+                setDisplayedText('');
+            }
+        }, { threshold: 0.5 });
         const currentRef = ref.current;
-        if (currentRef) {
-            observer.observe(currentRef);
-        }
-
+        if (currentRef) { observer.observe(currentRef); }
         return () => {
             cancelAnimationFrame(animationFrameRef.current);
-            if (currentRef) {
-                observer.unobserve(currentRef);
-            }
+            if (currentRef) { observer.unobserve(currentRef); }
         };
     }, [text]);
-
     return <h2 ref={ref} className="text-xl md:text-3xl font-bold font-dmserif text-[#2FBD90] mb-2 h-8">{displayedText}</h2>;
 };
 
-const AnimatedCard = ({ children, delay = 0 }) => {
+export const AnimatedCard = ({ children, delay = 0 }) => {
+    // ... same code as before ...
     const [isVisible, setIsVisible] = useState(false);
     const cardRef = useRef(null);
-
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        setIsVisible(true);
-                    }, delay);
-                }
-            },
-            { 
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => { setIsVisible(true); }, delay);
             }
-        );
-
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
         const currentRef = cardRef.current;
-        if (currentRef) {
-            observer.observe(currentRef);
-        }
-
-        return () => {
-            if (currentRef) {
-                observer.unobserve(currentRef);
-            }
-        };
+        if (currentRef) { observer.observe(currentRef); }
+        return () => { if (currentRef) { observer.unobserve(currentRef); }};
     }, [delay]);
-
-    return (
-        <div
-            ref={cardRef}
-            className={`transform transition-all duration-700 ease-out ${
-                isVisible 
-                    ? 'translate-y-0 opacity-100' 
-                    : 'translate-y-10 opacity-0'
-            }`}
-        >
-            {children}
-        </div>
-    );
+    return <div ref={cardRef} className={`transform transition-all duration-700 ease-out ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>{children}</div>;
 };
 
-const Header = () => {
-    // State to manage whether the mobile menu is open or closed
+// --- Header updated with HashLink ---
+export const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
-
     return (
         <header className="absolute top-0 left-0 right-0 z-20">
             <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-                {/* Logo */}
-                <a href="#" className="flex items-center transform hover:scale-110 transition-transform duration-300">
+                <Link to="/" className="flex items-center transform hover:scale-110 transition-transform duration-300">
                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="mr-2">
                         <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" strokeWidth="2" strokeLinejoin="round"/>
                         <path d="M2 17L12 22L22 17" stroke="white" strokeWidth="2" strokeLinejoin="round"/>
                         <path d="M2 12L12 17L22 12" stroke="white" strokeWidth="2" strokeLinejoin="round"/>
                     </svg>
                     <span className="text-xl text-white font-bold">PrizmPix</span>
-                </a>
+                </Link>
 
-                {/* Desktop Navigation (hidden on mobile) */}
                 <nav className="hidden md:flex items-center space-x-8">
-                    <a href="#" className="text-gray-300 hover:text-white">About Us</a>
-                    <a href="#" className="text-gray-300 hover:text-white">Features</a>
-                    <a href="#" className="text-gray-300 hover:text-white">Services</a>
+                    <Link to="/about" className="text-gray-300 hover:text-white">About Us</Link>
+                    <Link to="/portfolio" className="text-gray-300 hover:text-white">Portfolio</Link>
+                    <Link to="/services" className="text-gray-300 hover:text-white">Services</Link>
                 </nav>
-                <a href="#contact-form" className="hidden md:block bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg border border-gray-600 transition-colors duration-700">
+                
+                {/* --- CHANGE: Use HashLink for smooth scrolling --- */}
+                <HashLink smooth to="/#contact-form" className="hidden md:block bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg border border-gray-600 transition-colors duration-700">
                     Contact Us
-                </a>
+                </HashLink>
 
-                {/* Hamburger Menu Button (visible on mobile) */}
                 <div className="md:hidden">
                     <button onClick={() => setIsOpen(!isOpen)} className="text-white focus:outline-none">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            {isOpen ? (
-                                // X icon for close
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                            ) : (
-                                // --- CHANGE: Classic Hamburger Icon Path ---
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                            )}
+                            {isOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />}
                         </svg>
                     </button>
                 </div>
             </div>
 
-            {/* Mobile Dropdown Menu */}
             <div className={`md:hidden absolute top-full left-0 w-full bg-black bg-opacity-90 backdrop-blur-sm transition-all duration-300 ease-in-out transform ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}>
                 <div className="flex flex-col items-center space-y-6 py-8">
-                    <a href="#" className="text-lg text-gray-300 hover:text-white" onClick={() => setIsOpen(false)}>About Us</a>
-                    <a href="#" className="text-lg text-gray-300 hover:text-white" onClick={() => setIsOpen(false)}>Features</a>
-                    <a href="#" className="text-lg text-gray-300 hover:text-white" onClick={() => setIsOpen(false)}>Services</a>
-                    <a href="#contact-form" className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg border border-gray-600 transition-colors duration-700" onClick={() => setIsOpen(false)}>
+                    <Link to="/about" className="text-lg text-gray-300 hover:text-white" onClick={() => setIsOpen(false)}>About Us</Link>
+                    <Link to="/portfolio" className="text-lg text-gray-300 hover:text-white" onClick={() => setIsOpen(false)}>Portfolio</Link>
+                    <Link to="/services" className="text-lg text-gray-300 hover:text-white" onClick={() => setIsOpen(false)}>Services</Link>
+                    <HashLink smooth to="/#contact-form" className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg border border-gray-600 transition-colors duration-700" onClick={() => setIsOpen(false)}>
                         Contact Us
-                    </a>
+                    </HashLink>
                 </div>
             </div>
         </header>
     );
 };
 
-const Hero = () => {
-  const containerRef = useRef(null);
-  const textRef = useRef(null);
-  const [fontSize, setFontSize] = useState(100);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const resizeText = () => {
-      if (containerRef.current) {
-        const containerWidth = containerRef.current.offsetWidth * .95;
-        const containerHeight = containerRef.current.offsetHeight * 0.8;
-        const baseFontSize = 100;
-
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        ctx.font = `900 ${baseFontSize}px Host Grotesk`;
-        const textWidth = ctx.measureText("Custom Website Builds").width;
-
-        const scaleByWidth = containerWidth / textWidth;
-        const scaleByHeight = containerHeight / baseFontSize;
-
-        const newFontSize = Math.min(
-          baseFontSize * scaleByWidth,
-          baseFontSize * scaleByHeight,
-          200
-        );
-
-        setFontSize(newFontSize);
-      }
-
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    resizeText();
-    window.addEventListener("resize", resizeText);
-    return () => window.removeEventListener("resize", resizeText);
-  }, []);
-
-  return (
-    <section className="relative h-screen flex items-center bg-black overflow-hidden">
-      {/* Background image on the right with fade */}
-      <div className="absolute inset-0 flex">
-        <div className="flex-1 bg-black" />
-        <div
-          className="flex-1 relative bg-cover bg-center"
-          style={{ backgroundImage: "url('/hero.png')" }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
+export const Hero = () => {
+    const containerRef = useRef(null);
+    const textRef = useRef(null);
+    const [fontSize, setFontSize] = useState(100);
+    const [isMobile, setIsMobile] = useState(false);
+  
+    useEffect(() => {
+        const resizeText = () => {
+          if (containerRef.current) {
+            const containerWidth = containerRef.current.offsetWidth * .95;
+            const containerHeight = containerRef.current.offsetHeight * 0.8;
+            const baseFontSize = 100;
+    
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            ctx.font = `900 ${baseFontSize}px Host Grotesk`;
+            const textWidth = ctx.measureText("Custom Website Builds").width;
+    
+            const scaleByWidth = containerWidth / textWidth;
+            const scaleByHeight = containerHeight / baseFontSize;
+    
+            const newFontSize = Math.min(
+              baseFontSize * scaleByWidth,
+              baseFontSize * scaleByHeight,
+              200
+            );
+    
+            setFontSize(newFontSize);
+          }
+    
+          setIsMobile(window.innerWidth < 768);
+        };
+    
+        resizeText();
+        window.addEventListener("resize", resizeText);
+        return () => window.removeEventListener("resize", resizeText);
+    }, []);
+  
+    return (
+      <section className="relative h-screen max-h-[800px] lg:max-h-[960px] flex items-center bg-black overflow-hidden">
+        <div className="absolute inset-0 flex">
+          <div className="flex-1 bg-black" />
+          <div
+            className="flex-1 relative bg-cover bg-center"
+            style={{ backgroundImage: "url('/hero.png')" }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
+          </div>
         </div>
-      </div>
+        <div className="relative z-10 w-full max-w-6xl text-left">
+          <div className="px-6 md:pl-48 md:pr-0">
+            <div ref={containerRef} className="w-full" style={{ height: isMobile ? "20vh" : "20vh" }}>
+              <svg className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <mask id="text-mask" maskUnits="userSpaceOnUse">
+                    <rect width="100%" height="100%" fill="black" />
+                    <text
+                      ref={textRef}
+                      x="-2"
+                      y="50%"
+                      textAnchor="start"
+                      dominantBaseline="middle"
+                      fill="white"
+                      fontWeight="900"
+                      // --- CHANGE: Added responsive tracking classes ---
+                      className="font-Host Grotesk tracking-[-6px] md:tracking-[-8px] lg:tracking-[-10px]"
+                      style={{
+                        fontSize: `clamp(48px, ${fontSize}px, 200px)`,
+                        // --- CHANGE: Removed letterSpacing from here ---
+                      }}
+                    >
+                      {isMobile ? (
+                        <>
+                          <tspan x="0" dy="-0.5em">
+                            Custom Website
+                          </tspan>
+                          <tspan x="0" dy="1.2em">
+                            Builds
+                          </tspan>
+                        </>
+                      ) : (
+                        "Custom Website Builds"
+                      )}
+                    </text>
+                  </mask>
+                </defs>
+                <image
+                  href="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnQ4Znc5NjZtZHpidDg4YWh1NnhoNGhtbXBrcTR0bXZvMmpxNm9wbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qJgSlA4umGDFLLIEUA/giphy.gif"
+                  width="100%"
+                  height="100%"
+                  preserveAspectRatio="xMidYMid slice"
+                  mask="url(#text-mask)"
+                />
+              </svg>
+            </div>
+            <div className="mt-0">
+              <h3 className="text-xs font-pressstart text-white">
+                Unique Technology
+              </h3>
+              <p className="text-xs md:text-lg text-gray-300 mt-8 max-w-lg">
+                Harness the beauty, functionality and power of PrizmPix's cutting-edge
+                responsive websites and bring value to your customers. The web is your
+                oyster.
+              </p>
+            </div>
+            <div className="mt-8">
+              <h2 className="text-xl md:text-3xl font-bold font-montserrat text-white mb-4">
+                Unleash Web Power
+              </h2>
+              <UnscrambleText text="for humans" />
+            </div>
+            
+            <Link to="/services" className="mt-8 inline-block bg-gradient-to-r from-[#2FBD90] to-[#3BD6A2] hover:from-[#2ab584] hover:to-[#36c796] text-black font-bold py-3 px-8 rounded-lg text-lg transition-all duration-700">
+              Learn More
+            </Link>
 
-      {/* Left-side content */}
-      <div className="relative z-10 w-full max-w-6xl text-left">
-        <div className="px-6 md:pl-48 md:pr-0">
-          {/* Masked SVG text */}
-          <div ref={containerRef} className="w-full" style={{ height: isMobile ? "30vh" : "20vh" }}>
-            <svg className="w-full h-full" preserveAspectRatio="xMidYMid meet">
-              <defs>
-                <mask id="text-mask" maskUnits="userSpaceOnUse">
-                  <rect width="100%" height="100%" fill="black" />
-                  <text
-                    ref={textRef}
-                    x="-2"
-                    y="50%"
-                    textAnchor="start"
-                    dominantBaseline="middle"
-                    fill="white"
-                    fontWeight="900"
-                    className="font-Host Grotesk"
-                    style={{
-                      fontSize: `clamp(48px, ${fontSize}px, 200px)`,
-                      letterSpacing: isMobile ? "-6px" : "-10px",
-                    }}
-                  >
-                    {isMobile ? (
-                      <>
-                        <tspan x="0" dy="-0.5em">
-                          Custom Website
-                        </tspan>
-                        <tspan x="0" dy="1.2em">
-                          Builds
-                        </tspan>
-                      </>
-                    ) : (
-                      "Custom Website Builds"
-                    )}
-                  </text>
-                </mask>
-              </defs>
-              <image
-                href="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnQ4Znc5NjZtZHpidDg4YWh1NnhoNGhtbXBrcTR0bXZvMmpxNm9wbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qJgSlA4umGDFLLIEUA/giphy.gif"
-                width="100%"
-                height="100%"
-                preserveAspectRatio="xMidYMid slice"
-                mask="url(#text-mask)"
-              />
-            </svg>
           </div>
-
-          {/* Text below SVG */}
-          <div className="mt-0">
-            <h3 className="text-xs font-pressstart text-white">
-              Unique Technology
-            </h3>
-            <p className="text-xs md:text-lg text-gray-300 mt-8 max-w-lg">
-              Harness the beauty, functionality and power of PrizmPix's cutting-edge
-              responsive websites and bring value to your customers. The web is your
-              oyster.
-            </p>
-          </div>
-
-          {/* Secondary heading */}
-          <div className="mt-8">
-            <h2 className="text-xl md:text-3xl font-bold font-montserrat text-white mb-4">
-              Unleash Web Power
-            </h2>
-            <UnscrambleText text="for humans" />
-          </div>
-
-          {/* Call-to-action button */}
-          <button className="mt-8 bg-gradient-to-r from-[#2FBD90] to-[#3BD6A2] hover:from-[#2ab584] hover:to-[#36c796] text-black font-bold py-3 px-8 rounded-lg text-lg transition-all duration-700">
-            Learn More
-          </button>
         </div>
-      </div>
-    </section>
-  );
+      </section>
+    );
 };
 
-const Features = () => {
+export const Features = () => {
   const parallaxRef = useRef(null);
   const [backgroundPosition, setBackgroundPosition] = useState(0);
 
@@ -376,7 +323,7 @@ const Features = () => {
                 <img
                   src="/B2B-2.jpg"
                   alt="Business-to-Business tailored solutions"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               </div>
             </div>
@@ -452,7 +399,7 @@ const Features = () => {
   );
 };
 
-const MoreFeatures = () => {
+export const MoreFeatures = () => {
     const features = [
         { 
             title: "Content Creation", 
@@ -501,7 +448,7 @@ const MoreFeatures = () => {
     );
 };
 
-const LetsGetStarted = () => {
+export const LetsGetStarted = () => {
     return (
         <section className="py-6">
             <div className="container mx-auto px-6">
@@ -533,7 +480,7 @@ const LetsGetStarted = () => {
     );
 };
 
-const Testimonials = () => {
+export const Testimonials = () => {
     const testimonials = [
         {
             quote: "PrizmPix transformed our online presence. Their attention to detail and creative vision resulted in a website that not only looks stunning but also drives significant traffic and conversions. Highly recommended!",
@@ -599,10 +546,37 @@ const Partners = () => {
     );
 } */}
 
-const Footer = () => {
-    const [formData, setFormData] = useState({ name: '', company: '', email: '', message: '' });
-    const handleInputChange = (e) => { setFormData({ ...formData, [e.target.name]: e.target.value }); };
-    const handleSubmit = (e) => { e.preventDefault(); console.log('Form submitted:', formData); };
+export const Footer = () => {
+    const accessKey = "03d5d55e-6875-4266-ab44-e6c23f13fb5d";
+    const [result, setResult] = React.useState("");
+
+    const onSubmit = async (event) => {
+        event.preventDefault();
+        setResult("Sending....");
+        const formData = new FormData(event.target);
+
+        formData.append("access_key", accessKey);
+
+        const response = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            setResult("Form Submitted Successfully!");
+            event.target.reset(); // Clears the form fields
+        } else {
+            console.log("Error", data);
+            setResult(data.message);
+        }
+
+        // Hide the result message after 5 seconds
+        setTimeout(() => {
+            setResult("");
+        }, 5000);
+    };
 
     return (
         <footer className="bg-black text-gray-400 py-12" id="contact-form">
@@ -612,27 +586,29 @@ const Footer = () => {
                         <h2 className="text-4xl font-bold font-montserrat text-white">The Future is Now.</h2>
                         <p>Don't miss it. Reach out to us.</p>
                     </div>
-                    <div className="space-y-4">
+                    {/* --- CHANGE: Using the new onSubmit and simplified inputs --- */}
+                    <form onSubmit={onSubmit} className="space-y-4">
                         <div>
                             <label htmlFor="name" className="block mb-1 font-medium">Name</label>
-                            <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} className="w-full bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2FBD90]" />
+                            <input required type="text" id="name" name="name" className="w-full bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2FBD90]" />
                         </div>
                         <div>
                             <label htmlFor="company" className="block mb-1 font-medium">Company Name</label>
-                            <input type="text" id="company" name="company" value={formData.company} onChange={handleInputChange} className="w-full bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2FBD90]" />
+                            <input required type="text" id="company" name="company" className="w-full bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2FBD90]" />
                         </div>
                         <div>
                             <label htmlFor="email" className="block mb-1 font-medium">Email</label>
-                            <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2FBD90]" />
+                            <input required type="email" id="email" name="email" className="w-full bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2FBD90]" />
                         </div>
                         <div>
                             <label htmlFor="message" className="block mb-1 font-medium">Message</label>
-                            <textarea id="message" name="message" rows="4" value={formData.message} onChange={handleInputChange} className="w-full bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2FBD90]"></textarea>
+                            <textarea required id="message" name="message" rows="4" className="w-full bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2FBD90]"></textarea>
                         </div>
-                        <button type="button" onClick={handleSubmit} className="w-full bg-gradient-to-r from-[#2FBD90] to-[#3BD6A2] hover:from-[#2ab584] hover:to-[#36c796] text-black font-bold py-3 px-6 rounded-md transition-all duration-700">
+                        <button type="submit" className="w-full bg-gradient-to-r from-[#2FBD90] to-[#3BD6A2] hover:from-[#2ab584] hover:to-[#36c796] text-black font-bold py-3 px-6 rounded-md transition-all duration-700">
                             Send Message
                         </button>
-                    </div>
+                        {result && <p className="text-center text-white mt-4">{result}</p>}
+                    </form>
                 </div>
                 <div className="border-t border-gray-800 mt-12 pt-8">
                     <div className="grid md:grid-cols-4 gap-8">
@@ -673,20 +649,22 @@ const Footer = () => {
 };
 
 
-// 2. MAIN APP COMPONENT IS DEFINED LAST
 function App() {
     return (
-        <div className="bg-gray-100 text-gray-900 font-sans">
-            <Header />
-            <main>
-                <Hero />
-                <Features />
-                <MoreFeatures />
-                <LetsGetStarted />
-                <Testimonials />
-            </main>
-            <Footer />
-        </div>
+        <BrowserRouter>
+            <div className="bg-gray-100 text-gray-900 font-sans">
+                <Header />
+                <main>
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/services" element={<ServicesPage />} />
+                        <Route path="/portfolio" element={<PortfolioPage />} />
+                        <Route path="/about" element={<AboutUsPage />} />
+                    </Routes>
+                </main>
+                <Footer />
+            </div>
+        </BrowserRouter>
     );
 }
 
